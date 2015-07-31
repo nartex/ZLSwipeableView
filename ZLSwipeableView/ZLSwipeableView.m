@@ -212,15 +212,12 @@ ZLDirectionVectorToSwipeableViewDirection(CGVector directionVector) {
 	    // could return NO and cause the early return out of the UIGestureRecognizerStateBegan check,
 	    // UIGestureRecognizerStateEnded/UIGestureRecognizerStateCancelled will be called and we need
 	    // to keep track of whether we were allowed to swipe
-	static BOOL shouldBeginSwipe;
+	static BOOL shouldEndSwipe;
 	
     if (recognizer.state == UIGestureRecognizerStateBegan) {
 		
-		if ([self.delegate respondsToSelector:@selector(swipeableView:shouldBeginSwipe:)]) {
-			shouldBeginSwipe = [self.delegate swipeableView:self shouldBeginSwipe:swipeableView];
-			if (!shouldBeginSwipe) {
-				return;
-			}
+		if ([self.delegate respondsToSelector:@selector(swipeableView:shouldEndSwipe:)]) {
+			shouldEndSwipe = [self.delegate swipeableView:self shouldEndSwipe:swipeableView];
 		}
 		
         [self createAnchorViewForCover:swipeableView
@@ -251,10 +248,7 @@ ZLDirectionVectorToSwipeableViewDirection(CGVector directionVector) {
 
     if (recognizer.state == UIGestureRecognizerStateEnded ||
         recognizer.state == UIGestureRecognizerStateCancelled) {
-		
-		if (!shouldBeginSwipe) {
-			return;
-		}
+
         CGPoint velocity = [recognizer velocityInView:self];
         CGFloat velocityMagnitude =
             sqrtf(powf(velocity.x, 2) + powf(velocity.y, 2));
@@ -269,7 +263,7 @@ ZLDirectionVectorToSwipeableViewDirection(CGVector directionVector) {
             CGVectorMake(translation.x / translationMagnitude * scale,
                          translation.y / translationMagnitude * scale);
 
-        if ((ZLDirectionVectorToSwipeableViewDirection(directionVector) &
+        if (shouldEndSwipe && (ZLDirectionVectorToSwipeableViewDirection(directionVector) &
              self.direction) > 0 &&
             (ABS(translation.x) > self.relativeDisplacementThreshold *
                                       self.bounds.size.width || // displacement

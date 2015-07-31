@@ -31,7 +31,7 @@ typedef NS_ENUM(NSUInteger, ZLSwipeableViewDirection) {
 @optional
 
 - (BOOL)swipeableView:(ZLSwipeableView *)swipeableView
-     shouldBeginSwipe:(UIView *)view;
+     shouldEndSwipe:(UIView *)view;
 
 - (void)swipeableView:(ZLSwipeableView *)swipeableView
          didSwipeView:(UIView *)view
