@@ -8,6 +8,8 @@
 
 #import <UIKit/UIKit.h>
 
+const NSUInteger ZLPrefetchedViewsNumber = 3;
+
 typedef NS_ENUM(NSUInteger, ZLSwipeableViewDirection) {
     ZLSwipeableViewDirectionNone = 0,
     ZLSwipeableViewDirectionLeft = (1 << 0),
@@ -27,6 +29,10 @@ typedef NS_ENUM(NSUInteger, ZLSwipeableViewDirection) {
 /// Delegate
 @protocol ZLSwipeableViewDelegate <NSObject>
 @optional
+
+- (BOOL)swipeableView:(ZLSwipeableView *)swipeableView
+     shouldBeginSwipe:(UIView *)view;
+
 - (void)swipeableView:(ZLSwipeableView *)swipeableView
          didSwipeView:(UIView *)view
           inDirection:(ZLSwipeableViewDirection)direction;

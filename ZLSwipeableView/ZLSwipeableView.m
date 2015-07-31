@@ -9,7 +9,7 @@
 #import "ZLSwipeableView.h"
 #import "ZLPanGestureRecognizer.h"
 
-const NSUInteger ZLPrefetchedViewsNumber = 3;
+
 
 ZLSwipeableViewDirection
 ZLDirectionVectorToSwipeableViewDirection(CGVector directionVector) {
@@ -208,7 +208,21 @@ ZLDirectionVectorToSwipeableViewDirection(CGVector directionVector) {
     CGPoint location = [recognizer locationInView:self];
     UIView *swipeableView = recognizer.view;
 
+	    // Storing a static reference because although the delegate call swipeableView:shouldBeginSwipe:
+	    // could return NO and cause the early return out of the UIGestureRecognizerStateBegan check,
+	    // UIGestureRecognizerStateEnded/UIGestureRecognizerStateCancelled will be called and we need
+	    // to keep track of whether we were allowed to swipe
+	static BOOL shouldBeginSwipe;
+	
     if (recognizer.state == UIGestureRecognizerStateBegan) {
+		
+		if ([self.delegate respondsToSelector:@selector(swipeableView:shouldBeginSwipe:)]) {
+			shouldBeginSwipe = [self.delegate swipeableView:self shouldBeginSwipe:swipeableView];
+			if (!shouldBeginSwipe) {
+				return;
+			}
+		}
+		
         [self createAnchorViewForCover:swipeableView
                                atLocation:location
             shouldAttachAnchorViewToPoint:YES];
@@ -237,6 +251,10 @@ ZLDirectionVectorToSwipeableViewDirection(CGVector directionVector) {
 
     if (recognizer.state == UIGestureRecognizerStateEnded ||
         recognizer.state == UIGestureRecognizerStateCancelled) {
+		
+		if (!shouldBeginSwipe) {
+			return;
+		}
         CGPoint velocity = [recognizer velocityInView:self];
         CGFloat velocityMagnitude =
             sqrtf(powf(velocity.x, 2) + powf(velocity.y, 2));
