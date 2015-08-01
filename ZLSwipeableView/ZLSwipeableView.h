@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-const NSUInteger ZLPrefetchedViewsNumber = 3;
+extern const NSUInteger ZLPrefetchedViewsNumber;
 
 typedef NS_ENUM(NSUInteger, ZLSwipeableViewDirection) {
     ZLSwipeableViewDirectionNone = 0,
