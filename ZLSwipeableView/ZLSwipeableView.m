@@ -138,6 +138,10 @@ ZLDirectionVectorToSwipeableViewDirection(CGVector directionVector) {
     }
 }
 
+- (NSInteger)viewsStackCount {
+    return self.containerView.subviews.count;
+}
+
 - (void)loadNextSwipeableViewsIfNeeded {
     NSInteger numViews = self.containerView.subviews.count;
     NSMutableSet *newViews = [NSMutableSet set];
