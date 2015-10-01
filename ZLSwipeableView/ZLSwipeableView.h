@@ -125,4 +125,6 @@ typedef NS_ENUM(NSUInteger, ZLSwipeableViewDirection) {
 /// Swipe top view to the down programmatically
 - (void)swipeTopViewToDown;
 
+- (NSInteger)viewsStackCount;
+
 @end
